@@ -4,6 +4,8 @@ import burp.api.montoya.BurpExtension;
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.logging.Logging;
 import main.java.example.httphandler.MyHttpHandler;
+import main.java.example.proxyhandlers.MyProxyHttpRequestHandler;
+import main.java.example.proxyhandlers.MyProxyHttpResponseHandler;
 
 public class PracticeBurpExtension implements BurpExtension {
     @Override
@@ -15,10 +17,22 @@ public class PracticeBurpExtension implements BurpExtension {
         helloWorld(logging);
 
         // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/httphandler
-        initializeHttpHandlers(api);
+        registerHttpHandlers(api);
+
+        // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/proxyhandler/src/main/java/example/proxyhandler
+        registerProxyHandlers(api);
     }
 
-    void initializeHttpHandlers(MontoyaApi api){
+    private void registerProxyHandlers(MontoyaApi api) {
+        //Register proxy handlers with Burp.
+        api.proxy().registerRequestHandler(new MyProxyHttpRequestHandler());
+        api.proxy().registerResponseHandler(new MyProxyHttpResponseHandler());
+
+        // write a message to our output stream
+        api.logging().logToOutput("proxy handlers registered");
+    }
+
+    void registerHttpHandlers(MontoyaApi api){
         //register out http handler with burp.
         api.http().registerHttpHandler(new MyHttpHandler(api));
 
