@@ -20,10 +20,10 @@ public class PracticeBurpExtension implements BurpExtension {
         registerHttpHandlers(api);
 
         // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/proxyhandler/src/main/java/example/proxyhandler
-        registerProxyHandlers(api);
+        registerBasicProxyHandlers(api);
     }
 
-    private void registerProxyHandlers(MontoyaApi api) {
+    private void registerBasicProxyHandlers(MontoyaApi api) {
         //Register proxy handlers with Burp.
         api.proxy().registerRequestHandler(new MyProxyHttpRequestHandler());
         api.proxy().registerResponseHandler(new MyProxyHttpResponseHandler());
