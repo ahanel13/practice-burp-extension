@@ -2,25 +2,66 @@ package main.java.example;
 
 import burp.api.montoya.BurpExtension;
 import burp.api.montoya.MontoyaApi;
+import burp.api.montoya.extension.Extension;
+import burp.api.montoya.extension.ExtensionUnloadingHandler;
+import burp.api.montoya.http.Http;
 import burp.api.montoya.logging.Logging;
+import burp.api.montoya.proxy.Proxy;
+import burp.api.montoya.scanner.Scanner;
+import burp.api.montoya.scanner.audit.AuditIssueHandler;
+import burp.api.montoya.scanner.audit.issues.AuditIssue;
+import main.java.example.eventlistener.EventListenerRequestHandler;
+import main.java.example.eventlistener.EventListenerHttpHandler;
+import main.java.example.eventlistener.EventListenerResponseHandler;
 import main.java.example.httphandler.MyHttpHandler;
 import main.java.example.proxyhandlers.MyProxyHttpRequestHandler;
 import main.java.example.proxyhandlers.MyProxyHttpResponseHandler;
 
 public class PracticeBurpExtension implements BurpExtension {
+    private Logging logging;
+    private Http http;
+    private Proxy proxy;
+    private Extension extension;
+    private Scanner scanner;
+
+
     @Override
     public void initialize(MontoyaApi api) {
         api.extension().setName("Practice Burp Extension");
-        Logging logging = api.logging();
+        this.logging = api.logging();
+        http = api.http();
+        proxy = api.proxy();
+        extension = api.extension();
+        scanner = api.scanner();
 
         // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/helloworld
-        helloWorld(logging);
+        helloWorld(this.logging);
 
         // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/httphandler
         registerHttpHandlers(api);
 
         // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/proxyhandler/src/main/java/example/proxyhandler
         registerBasicProxyHandlers(api);
+
+        // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/eventlisteners/src/main/java/example/eventlisteners
+        eventListeners(api);
+    }
+
+    private void eventListeners(MontoyaApi api) {
+        // register the HTTP handler for event listeners
+        http.registerHttpHandler(new EventListenerHttpHandler());
+
+        // register new Proxy handlers
+        proxy.registerRequestHandler(new EventListenerRequestHandler(api));
+        proxy.registerResponseHandler(new EventListenerResponseHandler(api));
+
+        // register a new Audit Issue handler
+        scanner.registerAuditIssueHandler(new MyAuditIssueListenerHandler());
+
+        // register a new extension unload handler (whatever that means)
+        extension.registerUnloadingHandler(new MyExtensionUnloadHandler());
+
+        api.logging().logToOutput("event listeners registered");
     }
 
     private void registerBasicProxyHandlers(MontoyaApi api) {
@@ -56,5 +97,19 @@ public class PracticeBurpExtension implements BurpExtension {
 
         // throw an exception that will appear in our error stream (this stops the extension from continuing)
         // throw new RuntimeException("Hello exception");
+    }
+
+    private class MyAuditIssueListenerHandler implements AuditIssueHandler {
+        @Override
+        public void handleNewAuditIssue(AuditIssue auditIssue) {
+            logging.logToOutput("New scan issue: " + auditIssue.name());
+        }
+    }
+
+    private class MyExtensionUnloadHandler implements ExtensionUnloadingHandler {
+        @Override
+        public void extensionUnloaded() {
+            logging.logToOutput("Extension was unloaded.");
+        }
     }
 }
