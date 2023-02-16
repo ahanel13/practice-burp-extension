@@ -1,4 +1,4 @@
-package main.java.example.httphandler;
+package main.java.example.basichttphandler;
 
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.core.Annotations;

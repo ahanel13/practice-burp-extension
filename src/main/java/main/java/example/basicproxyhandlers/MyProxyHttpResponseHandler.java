@@ -1,4 +1,4 @@
-package main.java.example.proxyhandlers;
+package main.java.example.basicproxyhandlers;
 
 import burp.api.montoya.proxy.http.InterceptedResponse;
 import burp.api.montoya.proxy.http.ProxyResponseHandler;

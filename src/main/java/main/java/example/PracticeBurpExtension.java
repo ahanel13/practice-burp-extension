@@ -13,9 +13,10 @@ import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import main.java.example.eventlistener.EventListenerRequestHandler;
 import main.java.example.eventlistener.EventListenerHttpHandler;
 import main.java.example.eventlistener.EventListenerResponseHandler;
-import main.java.example.httphandler.MyHttpHandler;
-import main.java.example.proxyhandlers.MyProxyHttpRequestHandler;
-import main.java.example.proxyhandlers.MyProxyHttpResponseHandler;
+import main.java.example.basichttphandler.MyHttpHandler;
+import main.java.example.basicproxyhandlers.MyProxyHttpRequestHandler;
+import main.java.example.basicproxyhandlers.MyProxyHttpResponseHandler;
+import main.java.example.loggerinterface.CreateTab;
 
 public class PracticeBurpExtension implements BurpExtension {
     private Logging logging;
@@ -45,7 +46,16 @@ public class PracticeBurpExtension implements BurpExtension {
 
         // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/eventlisteners/src/main/java/example/eventlisteners
         eventListeners(api);
+
+        // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/customlogger
+        customLogger(api);
     }
+
+    private void customLogger(MontoyaApi api) {
+        CreateTab tab = new CreateTab(api);
+        logging.logToOutput("Practice Tab created");
+    }
+
 
     private void eventListeners(MontoyaApi api) {
         // register the HTTP handler for event listeners
