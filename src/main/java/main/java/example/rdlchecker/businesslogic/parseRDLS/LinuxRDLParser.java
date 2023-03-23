@@ -1,4 +1,4 @@
-package main.java.example.rdlchecker.parseRDLS;
+package main.java.example.rdlchecker.businesslogic.parseRDLS;
 
 import java.util.ArrayList;
 import java.util.List;

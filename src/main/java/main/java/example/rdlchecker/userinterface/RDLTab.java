@@ -4,7 +4,7 @@ import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.logging.Logging;
 import main.java.example.loggerinterface.TableModel;
 import main.java.example.loggerinterface.UiHttpHandler;
-import main.java.example.rdlchecker.RDLUrlGenerator;
+import main.java.example.rdlchecker.businesslogic.RDLUrlGenerator;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;

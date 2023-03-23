@@ -1,5 +1,6 @@
 package main.java.example.rdlchecker;
 
+import main.java.example.rdlchecker.businesslogic.RDLUrlGenerator;
 import org.junit.Test;
 
 import java.io.BufferedReader;

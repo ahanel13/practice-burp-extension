@@ -1,8 +1,8 @@
-package main.java.example.rdlchecker;
+package main.java.example.rdlchecker.businesslogic;
 
 import burp.api.montoya.logging.Logging;
-import main.java.example.rdlchecker.parseRDLS.LinuxRDLParser;
-import main.java.example.rdlchecker.parseRDLS.WindowsRDLParser;
+import main.java.example.rdlchecker.businesslogic.parseRDLS.LinuxRDLParser;
+import main.java.example.rdlchecker.businesslogic.parseRDLS.WindowsRDLParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
