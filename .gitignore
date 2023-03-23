@@ -41,7 +41,4 @@ build/
 .DS_Store
 
 ### Senstive Test Resources ###
-windows-rdl.txt
-linux-rdl.txt
-linux_generated_urls
-windows_generated_urls
+/src/test/resources/rdls/*
