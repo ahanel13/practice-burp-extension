@@ -41,4 +41,4 @@ build/
 .DS_Store
 
 ### Senstive Test Resources ###
-/src/test/resources/rdls/*
+src/test/resources/rdls/*

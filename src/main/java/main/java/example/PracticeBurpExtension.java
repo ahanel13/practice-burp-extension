@@ -17,6 +17,7 @@ import main.java.example.basichttphandler.MyHttpHandler;
 import main.java.example.basicproxyhandlers.MyProxyHttpRequestHandler;
 import main.java.example.basicproxyhandlers.MyProxyHttpResponseHandler;
 import main.java.example.loggerinterface.CreateTab;
+import main.java.example.rdlchecker.userinterface.RDLTab;
 
 public class PracticeBurpExtension implements BurpExtension {
     private Logging logging;
@@ -49,6 +50,8 @@ public class PracticeBurpExtension implements BurpExtension {
 
         // https://github.com/PortSwigger/burp-extensions-montoya-api-examples/tree/main/customlogger
         customLogger(api);
+
+        rdlTab(api);
     }
 
     private void customLogger(MontoyaApi api) {
@@ -56,6 +59,10 @@ public class PracticeBurpExtension implements BurpExtension {
         logging.logToOutput("Practice Tab created");
     }
 
+    private void rdlTab(MontoyaApi api){
+        RDLTab RDLTab = new RDLTab(api);
+        logging.logToOutput("RDL Tab Created");
+    }
 
     private void eventListeners(MontoyaApi api) {
         // register the HTTP handler for event listeners
