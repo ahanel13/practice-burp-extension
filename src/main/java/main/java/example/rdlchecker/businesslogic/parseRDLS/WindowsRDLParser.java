@@ -1,24 +1,21 @@
 package main.java.example.rdlchecker.businesslogic.parseRDLS;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 
-public class WindowsRDLParser implements ParseRDLInputFile{
-    private final List<String> filePaths = new ArrayList<>();
-
+public class WindowsRDLParser extends ParseRDLInputFile {
     @Override
-    public void parseRDL(Scanner scanner) {
+    public void parseRDL(BufferedReader reader) throws IOException {
         String commandExecutionLocation = null;
         String currentDirectory = null;
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-
+        String line;
+        while ((line = reader.readLine()) != null) {
             if (line.toLowerCase().contains("directory of")) {
                 currentDirectory = line.substring(line.indexOf("Directory of") + 12).trim();
                 currentDirectory = removeDriveLetter(currentDirectory);
-                if(commandExecutionLocation == null){
+                if (commandExecutionLocation == null) {
                     commandExecutionLocation = currentDirectory;
                 }
             } else {
@@ -26,12 +23,12 @@ public class WindowsRDLParser implements ParseRDLInputFile{
                 if (validFileName(fileName)) continue;
 
                 if (currentDirectory != null) {
-                    if(currentDirectory.equals(commandExecutionLocation)){
-                        filePaths.add(fileName);
+                    if (currentDirectory.equals(commandExecutionLocation)) {
+                        addToOutputFile(fileName);
                     } else {
-                        currentDirectory = currentDirectory.replace(commandExecutionLocation,"");
-                        currentDirectory = currentDirectory.replaceFirst("^\\\\","");
-                        filePaths.add(currentDirectory + "\\" + fileName);
+                        currentDirectory = currentDirectory.replace(commandExecutionLocation, "");
+                        currentDirectory = currentDirectory.replaceFirst("^\\\\", "");
+                        addToOutputFile(currentDirectory + "\\" + fileName);
                     }
                 }
             }
@@ -60,8 +57,9 @@ public class WindowsRDLParser implements ParseRDLInputFile{
     }
 
     @Override
-    public List<String> generateURLs(Scanner scanner) {
+    public void generateURLs(BufferedReader scanner, String outputFilePath, String domain) throws IOException {
+        this.outputFile = new File(outputFilePath);
+        this.domainName = domain;
         parseRDL(scanner);
-        return filePaths;
     }
 }

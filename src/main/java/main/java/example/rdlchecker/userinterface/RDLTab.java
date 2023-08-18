@@ -24,9 +24,7 @@ public class RDLTab {
     private JButton submitButton;
     private final Logging logging;
     public RDLTab(MontoyaApi api) {
-        TableModel tableModel = new TableModel();
         api.userInterface().registerSuiteTab("Process RDL", constructRDLTab());
-        api.http().registerHttpHandler(new UiHttpHandler(tableModel));
         logging = api.logging();
     }
 
@@ -75,12 +73,18 @@ public class RDLTab {
             logging.logToError("Failed to initialize RDL Processor");
             return;
         }
-        rdlUrlGenerator.generateUrls(domain);
+        rdlUrlGenerator.generateUrls();
     }
 
     private GroupLayout customizeLayout(GroupLayout layout) {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
+
+        // add checkboxes and description to layout
+        JLabel checkBoxLabel = new JLabel("Select options:");
+        JCheckBox checkBox1 = new JCheckBox("Option 1");
+        JCheckBox checkBox2 = new JCheckBox("Option 2");
+        JLabel descriptionLabel = new JLabel("<html><body>Select one or both options to enable some functionality.</body></html>");
 
         // Horizontal group
         layout.setHorizontalGroup(
@@ -89,48 +93,51 @@ public class RDLTab {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(fileLabel)
                                         .addComponent(domainLabel)
+                                        .addComponent(checkBoxLabel)
                                 )
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(fileTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addGroup(layout.createSequentialGroup()
                                                 .addComponent(domainTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         )
+                                        .addComponent(checkBox1)
+                                        .addComponent(checkBox2)
                                 )
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(browseButton)
                                         .addComponent(submitButton)
                                 )
-                        ));
+                        )
+                        .addComponent(descriptionLabel)
+                        .addComponent(submitButton, GroupLayout.Alignment.TRAILING)
+        );
 
         // Vertical group
         layout.setVerticalGroup(
-                layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(fileLabel)
-                                .addComponent(fileTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(browseButton))
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(domainLabel)
-                                .addComponent(domainTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(submitButton)))
-        ;
+                        layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(fileLabel)
+                                        .addComponent(fileTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(browseButton))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(domainLabel)
+                                        .addComponent(domainTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(submitButton))
+                .addComponent(checkBoxLabel)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(checkBox1)
+                        .addComponent(descriptionLabel))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(checkBox2)
+                        .addComponent(descriptionLabel))
+                .addGap(20)
+                .addComponent(submitButton)
+        );
 
         // Center everything in the panel
         layout.linkSize(SwingConstants.HORIZONTAL, fileLabel, domainLabel);
         layout.linkSize(SwingConstants.HORIZONTAL, fileTextField, domainTextField, browseButton);
-        layout.setVerticalGroup(
-                layout.createSequentialGroup()
-                        .addGap(20)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(fileLabel)
-                                .addComponent(fileTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(browseButton))
-                        .addGap(20)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(domainLabel)
-                                .addComponent(domainTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(submitButton)))
-        ;
         return layout;
     }
 }

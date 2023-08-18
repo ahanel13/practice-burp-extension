@@ -7,7 +7,6 @@ import main.java.example.rdlchecker.businesslogic.parseRDLS.WindowsRDLParser;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,16 +19,17 @@ public class RDLUrlGenerator {
     private final String outputFilePath;
     private final String inputRDLFilePath;
     private final String os;
+    private String domain;
     private List<String> filePaths;
     private final Logging logging;
     String border = new String(new char[50]).replace('\0', '=');
-    public RDLUrlGenerator(String inputRDLFilePath, String outputFilePath) throws IOException {
+    public RDLUrlGenerator(String inputRDLFilePath, String outputFilePath, String domain) throws IOException {
         this.inputRDLFilePath = inputRDLFilePath;
         this.outputFilePath = outputFilePath;
         this.filePaths = new ArrayList<>();
+        this.domain = domain;
         this.os = detectOS();
         this.logging = null;
-        readRDLInputFile();
     }
 
     public RDLUrlGenerator(String inputRDLFilePath, Logging logging) throws IOException {
@@ -39,7 +39,7 @@ public class RDLUrlGenerator {
         this.os = detectOS();
         this.logging = logging;
         logRDLProcessInfo();
-        readRDLInputFile();
+        processRDLInputFile();
     }
 
     private void logRDLProcessInfo() {
@@ -65,33 +65,24 @@ public class RDLUrlGenerator {
         return null;
     }
 
-    private void readRDLInputFile() throws IOException {
-        Scanner scanner = new Scanner(new BufferedReader(new FileReader(inputRDLFilePath)));
-        if(os.equals("Windows")){
+    private void processRDLInputFile() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(inputRDLFilePath));
+        if (os.equals("Windows")) {
             WindowsRDLParser windowsRDLParser = new WindowsRDLParser();
-            filePaths = windowsRDLParser.generateURLs(scanner);
+            windowsRDLParser.generateURLs(reader, outputFilePath, domain);
         } else if (os.equals("Linux")) {
             LinuxRDLParser linuxRDLParser = new LinuxRDLParser();
-            filePaths = linuxRDLParser.generateURLs(scanner);
+            linuxRDLParser.generateURLs(reader, outputFilePath, domain);
         }
-        scanner.close();
+        reader.close();
     }
 
-    public void generateUrls(String domainName){
-        PrintWriter writer;
+    public void generateUrls(){
         try {
-            writer = new PrintWriter(outputFilePath, StandardCharsets.UTF_8);
-            Collections.sort(filePaths);
-            for (String path : filePaths) {
-                String url = "https://" + domainName + "/" + path.replaceAll("\\\\", "/");
-                writer.println(url);
-            }
-            writer.close();
-            logSuccess();
+            processRDLInputFile();
         } catch (IOException e) {
             logFailure();
         }
-
     }
 
     private void logFailure() {

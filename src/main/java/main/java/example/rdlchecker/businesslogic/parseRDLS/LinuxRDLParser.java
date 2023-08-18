@@ -1,37 +1,39 @@
 package main.java.example.rdlchecker.businesslogic.parseRDLS;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class LinuxRDLParser implements ParseRDLInputFile{
+public class LinuxRDLParser extends ParseRDLInputFile {
     private final List<String> filePaths = new ArrayList<>();
 
     @Override
-    public void parseRDL(Scanner scanner) {
+    public void parseRDL(BufferedReader reader) throws IOException {
         String pwd = "";
         String commandExecutionLocation = null;
         String fileName;
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if(presentWorkingDir(line)){
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (presentWorkingDir(line)) {
                 pwd = getPWD(line);
-                if(commandExecutionLocation == null){
+                if (commandExecutionLocation == null) {
                     commandExecutionLocation = pwd;
                     pwd = null;
                 }
                 continue;
-            }
-            else {
+            } else {
                 fileName = getRDLFileName(line);
-                if(validFileName(fileName)) continue;
+                if (validFileName(fileName)) continue;
             }
 
-            if(pwd != null){
-                filePaths.add(pwd.concat("/").concat(fileName));
+            if (pwd != null) {
+                addToOutputFile(pwd.concat("/").concat(fileName));
             } else {
-                filePaths.add(fileName);
+                addToOutputFile(fileName);
             }
         }
     }
@@ -69,8 +71,9 @@ public class LinuxRDLParser implements ParseRDLInputFile{
     }
 
     @Override
-    public List<String> generateURLs(Scanner scanner) {
+    public void generateURLs(BufferedReader scanner, String outputFilePath, String domain) throws IOException {
+        this.outputFile = new File(outputFilePath);
+        this.domainName = domain;
         parseRDL(scanner);
-        return filePaths;
     }
 }

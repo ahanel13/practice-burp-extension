@@ -78,12 +78,12 @@ public class RDLUrlGeneratorTest {
     }
 
     private void generateUrlsForLinux() throws IOException {
-        RDLUrlGenerator rdlUrlGenerator = new RDLUrlGenerator(linuxRDL, linux_generated_urls);
-        rdlUrlGenerator.generateUrls(domainName);
+        RDLUrlGenerator rdlUrlGenerator = new RDLUrlGenerator(linuxRDL, linux_generated_urls, domainName);
+        rdlUrlGenerator.generateUrls();
     }
 
     private void generateUrlsForWindows() throws IOException {
-        RDLUrlGenerator rdlUrlGenerator = new RDLUrlGenerator(windowsRDL, windows_generated_urls);
-        rdlUrlGenerator.generateUrls(domainName);
+        RDLUrlGenerator rdlUrlGenerator = new RDLUrlGenerator(windowsRDL, windows_generated_urls, domainName);
+        rdlUrlGenerator.generateUrls();
     }
 }
